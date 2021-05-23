@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import { io, Socket } from "socket.io-client";
-
+import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-import { DefaultEventsMap } from "socket.io-client/build/typed-events";
 
 const SAVE_INTERVAL_MS = 2000;
 const TOOLBAR_OPTIONS = [
@@ -19,12 +17,10 @@ const TOOLBAR_OPTIONS = [
   ["clean"],
 ];
 
-export const TextEditor = () => {
-  const { id: documentId } = useParams<{ id: string | undefined }>();
-  const [socket, setSocket] =
-    useState<Socket<DefaultEventsMap, DefaultEventsMap>>();
-
-  const [quill, setQuill] = useState<Quill>();
+export default function TextEditor() {
+  const { id: documentId } = useParams<any>();
+  const [socket, setSocket] = useState<any>();
+  const [quill, setQuill] = useState<any>();
 
   useEffect(() => {
     const s = io("http://localhost:3001");
@@ -38,7 +34,7 @@ export const TextEditor = () => {
   useEffect(() => {
     if (socket == null || quill == null) return;
 
-    socket.once("load-document", (document) => {
+    socket.once("load-document", (document: any) => {
       quill.setContents(document);
       quill.enable();
     });
@@ -64,8 +60,8 @@ export const TextEditor = () => {
     const handler = (delta: any) => {
       quill.updateContents(delta);
     };
-
     socket.on("receive-changes", handler);
+
     return () => {
       socket.off("receive-changes", handler);
     };
@@ -73,12 +69,11 @@ export const TextEditor = () => {
 
   useEffect(() => {
     if (socket == null || quill == null) return;
+
     const handler = (delta: any, oldDelta: any, source: any) => {
       if (source !== "user") return;
-
       socket.emit("send-changes", delta);
     };
-
     quill.on("text-change", handler);
 
     return () => {
@@ -91,21 +86,14 @@ export const TextEditor = () => {
 
     wrapper.innerHTML = "";
     const editor = document.createElement("div");
-
     wrapper.append(editor);
     const q = new Quill(editor, {
       theme: "snow",
       modules: { toolbar: TOOLBAR_OPTIONS },
     });
-
     q.disable();
     q.setText("Loading...");
     setQuill(q);
   }, []);
-  return (
-    <div>
-      asd
-      <div className="container" ref={wrapperRef}></div>
-    </div>
-  );
-};
+  return <div className="container" ref={wrapperRef}></div>;
+}

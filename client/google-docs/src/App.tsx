@@ -1,5 +1,4 @@
-import React from "react";
-import logo from "./logo.svg";
+import TextEditor from "./TextEditor";
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,14 +6,12 @@ import {
   Redirect,
 } from "react-router-dom";
 import { v4 as uuidV4 } from "uuid";
-import "./App.css";
-import { TextEditor } from "./TextEditor";
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route>
+        <Route path="/" exact>
           <Redirect to={`/documents/${uuidV4()}`} />
         </Route>
         <Route path="/documents/:id">
