@@ -17,8 +17,8 @@ const TOOLBAR_OPTIONS = [
   ["clean"],
 ];
 
-export default function TextEditor() {
-  const { id: documentId } = useParams<{id: string}>();
+export default function TextEditor(): JSX.Element {
+  const { id: documentId } = useParams<{ id: string }>();
   const [socket, setSocket] = useState<Socket>();
   const [quill, setQuill] = useState<Quill>();
 
